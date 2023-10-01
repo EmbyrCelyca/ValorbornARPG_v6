@@ -1,3 +1,6 @@
+# game.py
+# This is the main game loop file. It initializes the game world, player, and other core components.
+# It also contains the main game loop where all updates and rendering occur.
 import pygame
 import sys
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, alpha
@@ -6,7 +9,6 @@ from player import Player
 from skills_engine import SkillsEngine
 from interpolation import lerp
 from hotkey_manager import HotkeyManager
-from basic_skills import DashSkill
 
 
 # Initialize Pygame
@@ -24,21 +26,19 @@ world = World()
 
 # Initialize player
 player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    
+hotkey_manager = HotkeyManager(SkillsEngine)  # Initialize HotkeyManager with SkillsEngine
+        
+hotkey_manager.update()  # Update HotkeyManager
 
 # Create a SkillsEngine instance for the player
 player_skills_engine = SkillsEngine(player)
 player_skills_engine.initialize_available_skills()
 
-# Register DashSkill
-player_skills_engine.register_skill('Dash', DashSkill)
-
-# Create a HotkeyManager instance and pass the SkillsEngine instance to it
-hotkey_manager = HotkeyManager(player_skills_engine)
-
-# Map skills to keys
-player_skills_engine.map_skill_to_key('dash', pygame.K_SPACE)
 
 # Main game loop
+
+# This is the main game loop where all updates and rendering occur.
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -61,6 +61,8 @@ while True:
     mouse_x, mouse_y = pygame.mouse.get_pos()  # Get mouse position outside the event loop
     print("Calling activate_skills")
     player_skills_engine.activate_skills(mouse_x, mouse_y)
+    
+    player_skills_engine.update_skills()  # Update the state of each skill
 
     # Draw everything
     world.draw_background(window)  # Draw the background

@@ -4,7 +4,7 @@ from attributes import Attributes  # Import Attributes class
 from movement import MovementHandler
 from skills_engine import SkillsEngine
 
-
+from hotkey_manager import HotkeyManager
 
 class Player:
     def __init__(self, x, y):
@@ -15,21 +15,13 @@ class Player:
         self.color = (0, 128, 255)
         self.attributes = Attributes()  # Initialize Attributes for the player
         self.movement_handler = MovementHandler(5)  # Initialize with move_speed
-        self.is_dashing = False
-        self.dash_cooldown_timer = 0
-        self.dash_distance = 100  # You can set this to whatever value you like
+        self.skills_engine = SkillsEngine(self)  # Initialize SkillsEngine for the player
+        self.hotkey_manager = HotkeyManager(self.skills_engine)  # Initialize HotkeyManager with SkillsEngine
         
     def draw(self, window):
         pygame.draw.rect(window, self.color, (SCREEN_WIDTH // 2 - self.width // 2, SCREEN_HEIGHT // 2 - self.height // 2, self.width, self.height))
 
     def update(self, target_x, target_y):
-        # Update the cooldown timer
-        if self.dash_cooldown_timer > 0:
-            self.dash_cooldown_timer -= 1 / FPS
-
-            # Reset the dash flag when the cooldown is complete
-            if self.dash_cooldown_timer <= 0:
-                self.is_dashing = False
         pass
 
     def move_towards(self, target_x, target_y):
